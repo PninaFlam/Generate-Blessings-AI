@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="he">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ברכות AI</title>
+</head>
+
+<body>
+
+    <h1>ברכות AI</h1>
+    <form id="blessingForm">
+        <label for="event">אירוע:</label>
+        <select id="event" name="event" required>
+            <option value="יום הולדת">יום הולדת</option>
+            <option value="חתונה">חתונה</option>
+            <option value="בר מצווה">בר מצווה</option>
+            <option value="חג">חג</option>
+        </select>
+        </br>
+        </br>
+        <label for="age">גיל:</label>
+        <input type="number" id="age" name="age">
+        </br>
+        </br>
+        <label for="type">סוג ברכה:</label>
+        <select id="type" name="type" required>
+            <option value="שיר">שיר</option>
+            <option value="מכתב">מכתב</option>
+            <option value="ברכה">ברכה</option>
+            <option value="נאום">נאום</option>
+        </select>
+        </br>
+        </br>
+        <label for="tone">סגנון:</label>
+        <select id="tone" name="tone" required>
+            <option value="מצחיק">מצחיק</option>
+            <option value="מרגש">מרגש</option>
+            <option value="שמח">שמח</option>
+            <option value="רישמי">רישמי</option>
+        </select>
+        </br>
+        </br>
+        <label for="length">אורך:</label>
+        <select id="length" name="length" required>
+            <option value="קצרה">קצרה</option>
+            <option value="בינונית">בינונית</option>
+            <option value="ארוכה">ארוכה</option>
+        </select>
+        </br>
+        </br>
+        <button type="submit">כתוב לי ברכה</button>
+    </form>
+
+    <div id="blessingContainer" style="display:none;">
+        <h2>הברכה שלך:</h2>
+        <p id="blessing"></p>
+        <button id="anotherBlessingBtn">אני רוצה ברכה אחרת</button>
+    </div>
+
+    <script>
+        const form = document.getElementById('blessingForm');
+        const blessingContainer = document.getElementById('blessingContainer');
+        const blessingText = document.getElementById('blessing');
+        const anotherBlessingBtn = document.getElementById('anotherBlessingBtn');
+        let blessings = [];
+        let blessingIndex = 0;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch('/blessings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (response.ok) {
+                blessings = result.blessings;
+                blessingIndex = 0;
+                blessingText.textContent = blessings[blessingIndex];
+                blessingContainer.style.display = 'block';
+            } else {
+                alert('שגיאה ביצירת הברכה, נסה שוב.');
+            }
+        });
+
+        anotherBlessingBtn.addEventListener('click', () => {
+            blessingIndex = (blessingIndex + 1) % blessings.length;
+            blessingText.textContent = blessings[blessingIndex];
+        });
+    </script>
+</body>
+
+</html>
