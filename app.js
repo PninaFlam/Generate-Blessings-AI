@@ -9,7 +9,7 @@ import { dirname } from 'path';
 dotenv.config();
 
 const app = express();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY })
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 const port = process.env.PORT;
 
 app.use(cors());
